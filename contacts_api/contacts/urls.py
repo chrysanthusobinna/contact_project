@@ -1,5 +1,5 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 from .views import (
     register, logout, get_contacts, create_contact,
     get_contact, edit_contact, delete_contact
@@ -11,8 +11,10 @@ urlpatterns = [
     path('logout/', logout, name='logout'),
     path('contacts/', get_contacts, name='get_contacts'),
     path('contacts/create/', create_contact, name='create_contact'),
-    path('contacts/<int:pk>/', get_contact, name='get_contact'),  # Get single contact
-    path('contacts/<int:pk>/edit/', edit_contact, name='edit_contact'),  # Edit contact
-    path('contacts/<int:pk>/delete/', delete_contact, name='delete_contact'),  # Delete contact
+    path('contacts/<int:pk>/', get_contact, name='get_contact'),
+    path('contacts/<int:pk>/edit/', edit_contact, name='edit_contact'),  
+    path('contacts/<int:pk>/delete/', delete_contact, name='delete_contact'), 
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+
 ]

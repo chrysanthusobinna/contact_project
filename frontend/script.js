@@ -2,7 +2,7 @@
         // FUNCTION LOAD CONTACTS
         function loadContacts(){
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/contacts/',
+                url: API_BASE_URL + '/contacts/',
                 method: 'GET',
                 headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
                 success: function(data){
@@ -25,17 +25,55 @@
             });
         }     
 
+        //CHECK IF USER IS LOGGED IN
+        function isUserLoggedIn(){
+            return new Promise((resolve) => {
+                const token = localStorage.getItem('access');
+                if(token){
+                    $.ajax({
+                        url: API_BASE_URL + '/token/verify/',
+                        method: 'POST',
+                        data: JSON.stringify({ token: token }),
+                        contentType: 'application/json',
+                        success: function(){
+                            resolve(true);  
+                        },
+                        error: function(){
+                            resolve(false);  
+                        }
+                    });
+                } else {
+                    resolve(false);  
+                }
+            });
+        }
+
+        
     // Document ready 
     $(function (){
-
-        // CALL FUNCTION LOAD CONTACT
-        loadContacts();
         
+        // IF USER IS LOGGED IN
+        isUserLoggedIn().then((loggedIn) => {
+            if(loggedIn){
+                // User is logged in
+                $('#loginNav, #registerNav').addClass('d-none');
+                $('#logoutNav').removeClass('d-none');
+
+                loadContacts();
+            } else {
+                // User is not logged in
+                $('#loginNav, #registerNav').removeClass('d-none');
+                $('#logoutNav').addClass('d-none');
+                $('#contactsSection').hide();
+            }
+        });
+
+
         // USER REGISTER
         $('#registerBtn').click(function(e){
             e.preventDefault();
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/register/',
+                url: API_BASE_URL + '/register/',
                 method: 'POST',
                 data: JSON.stringify({
                     username: $('#registerUsername').val(),
@@ -67,13 +105,12 @@
             });
         });
 
-    
  
         //USER LOGIN
         $('#loginBtn').click(function(e){
             e.preventDefault();
             $.ajax({
-                url: 'http://127.0.0.1:8000/api/login/',
+                url: API_BASE_URL + '/login/',
                 method: 'POST',
                 data: JSON.stringify({
                     username: $('#loginUsername').val(),
@@ -90,8 +127,11 @@
                         .removeClass('d-none alert-danger')
                         .addClass('alert-success')
                         .find('#alertMessage').text('Login successful!');
-    
-                    loadContacts(); // Load contacts dynamically after login
+
+                        $('#loginNav, #registerNav').addClass('d-none');
+                        $('#logoutNav').removeClass('d-none');
+
+                        loadContacts(); // Load contacts dynamically after login
                 },
                 error: function(xhr){
                     let errorMessage = 'Login failed! Incorrect username or password.';
@@ -109,7 +149,7 @@
     
             const contactId = $('#contactId').val();
             const method = contactId ? 'PUT' : 'POST';
-            const url = contactId ? `http://127.0.0.1:8000/api/contacts/${contactId}/edit/` : 'http://127.0.0.1:8000/api/contacts/create/';
+            const url = contactId ? `${API_BASE_URL}/contacts/${contactId}/edit/` : API_BASE_URL + '/contacts/create/';
     
             $.ajax({
                 url: url,
@@ -146,7 +186,6 @@
             });
         });
     
-        // Show modal for adding new contact
         $('#addContact').click(function(){
             $('#contactId').val('');
             $('#contactName').val('');
@@ -164,7 +203,7 @@
         $('#contactErrorAlert').addClass('d-none');
     
         $.ajax({
-            url: `http://127.0.0.1:8000/api/contacts/${id}/`,
+            url: `${API_BASE_URL}/contacts/${id}/`,
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
             success: function(contact){
@@ -200,7 +239,7 @@
     // Confirm Deletion
     $('#confirmDelete').click(function(){
         $.ajax({
-            url: `http://127.0.0.1:8000/api/contacts/${contactIdToDelete}/delete/`,
+            url: `${API_BASE_URL}/contacts/${contactIdToDelete}/delete/`,
             method: 'DELETE',
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
             success: function(){
