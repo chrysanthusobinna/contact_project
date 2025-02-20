@@ -1,0 +1,167 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Contacts App</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fa-solid fa-address-book"></i> Contacts App
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i class="fa-solid fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
+                            <i class="fa-solid fa-user-plus"></i> Register
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="text-center mt-5">
+            <h1 class="display-4"><i class="fa-solid fa-address-book"></i> Welcome to Contacts App</h1>
+            <p class="lead">Easily store, manage, and organize your contacts securely.</p>
+        </div>
+
+        <div id="mainAlert" class="mt-5 alert alert-success alert-dismissible fade show d-none" role="alert">
+            <span id="alertMessage"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="mt-5" id="contactsSection" style="display: none;">
+            <button class="btn btn-primary mb-3" id="addContact">Add Contact</button>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="contactsBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Login</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="loginErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+            <input type="text" id="loginUsername" class="form-control mb-2" placeholder="Username">
+            <input type="password" id="loginPassword" class="form-control" placeholder="Password">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Register Modal -->
+    <div class="modal fade" id="registerModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Register</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="registerErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+            <input type="text" id="registerUsername" class="form-control mb-2" placeholder="Username">
+            <input type="email" id="registerEmail" class="form-control mb-2" placeholder="Email">
+            <input type="password" id="registerPassword" class="form-control" placeholder="Password">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success" id="registerBtn">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Add/Edit Contact Modal -->
+    <div class="modal fade" id="contactModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Contact</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="contactErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+                <input type="hidden" id="contactId">
+                <input type="text" id="contactName" class="form-control mb-2" placeholder="Name">
+                <input type="text" id="contactAddress" class="form-control mb-2" placeholder="Address">
+                <input type="text" id="contactPhone" class="form-control" placeholder="Phone">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success" id="saveContact">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    <!-- Delete Contact Modal -->
+    <div class="modal fade" id="deleteContactModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Contact</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this contact?</p>
+                    <div id="deleteErrorAlert" class="alert alert-danger d-none" role="alert"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" id="confirmDelete">Delete</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+
+
+</body>
+</html>
