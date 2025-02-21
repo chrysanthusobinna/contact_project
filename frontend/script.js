@@ -20,6 +20,15 @@
                 .find('#alertMessage').text(errorMessage);
         }
 
+
+        // FUNCTION TO REPLACE UNDERSCORES WITH SPACES, CAPITALIZE WORDS
+        function formatErrorKey(key) {
+            return key.replace(/_/g, ' ')
+                    .split(' ')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+        }
+
  
         // FUNCTION LOAD CONTACTS
         function loadContacts(){
@@ -28,20 +37,36 @@
                 method: 'GET',
                 headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
                 success: function(data){
+                    if($.fn.DataTable.isDataTable('#contactsTable')){
+                        $('#contactsTable').DataTable().destroy();
+                    }
+
                     $('#contactsBody').empty();
+
                     data.forEach(function(contact){
                         $('#contactsBody').append(`
                             <tr>
                                 <td>${contact.name}</td>
                                 <td>${contact.address}</td>
                                 <td>${contact.phone_number}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info edit" data-id="${contact.id}">Edit</button>
-                                    <button class="btn btn-sm btn-danger delete" data-id="${contact.id}">Delete</button>
+                                <td class="text-center text-nowrap">
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <button class="btn btn-sm btn-outline-info edit" data-id="${contact.id}">
+                                            <i class="fa-solid fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger delete" data-id="${contact.id}">
+                                            <i class="fa-solid fa-trash"></i> Delete
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         `);
                     });
+                                    
+
+                    // Reinitialize DataTable
+                    $('#contactsTable').DataTable();
+                    
                     $('#contactsSection').show();
                 },
                 error: function(){
@@ -49,6 +74,7 @@
                 }
             });
         }
+
 
         //CHECK IF USER IS LOGGED IN
         function isUserLoggedIn(){
@@ -105,7 +131,7 @@
                 loadContacts();
             } else {
                 // User is not logged in
-                $('#loginNav, #registerNav').removeClass('d-none');
+                $('#loginNav, #registerNav, #GuestSection').removeClass('d-none');
                 $('#logoutNav').addClass('d-none');
                 $('#contactsSection').hide();
             }
@@ -136,9 +162,10 @@
                         let errors = xhr.responseJSON;
                         let errorMessage = '<ul>';
                         for (let key in errors){
-                            errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                            let formattedKey = formatErrorKey(key); 
+                            errorMessage += `<li><strong>${formattedKey}:</strong> ${errors[key]}</li>`;
                         }
-                        errorMessage += '</ul>';
+                        errorMessage += '</ul>';                        
                         
                         $('#registerErrorAlert')
                             .removeClass('d-none')   
@@ -180,14 +207,8 @@
                     loadContacts();  
                 },
                 error: function(xhr){
-                    if(xhr.status === 401){
-                        let errorMessage = 'Login failed! Incorrect username or password.';
-                        $('#loginErrorAlert')
-                            .removeClass('d-none')
-                            .text(errorMessage);
-                    } else {
-                        handleApiError(xhr); 
-                    }
+                    let errorMessage = 'Login failed! Incorrect username or password.';
+                    $('#loginErrorAlert').removeClass('d-none') .text(errorMessage);
                 }
             });
         });
@@ -245,7 +266,8 @@
                         let errors = xhr.responseJSON;
                         let errorMessage = '<ul>';
                         for (let key in errors){
-                            errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                            let formattedKey = formatErrorKey(key); 
+                            errorMessage += `<li><strong>${formattedKey}:</strong> ${errors[key]}</li>`;
                         }
                         errorMessage += '</ul>';
         
@@ -260,6 +282,7 @@
         });
     
         $('#addContact').click(function(){
+            $('#contactModalTittle').text('Add Contact');
             $('#contactId').val('');
             $('#contactName').val('');
             $('#contactAddress').val('');
@@ -280,6 +303,7 @@
             method: 'GET',
             headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
             success: function(contact){
+                $('#contactModalTittle').text('Edit Contact');
                 $('#contactId').val(contact.id);
                 $('#contactName').val(contact.name);
                 $('#contactAddress').val(contact.address);
