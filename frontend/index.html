@@ -38,28 +38,64 @@
                         </a>
                     </li>
                     <li class="nav-item d-none" id="logoutNav">
-                        <a class="nav-link text-white" href="#" id="logoutBtn">
+                        <a class="nav-link text-white" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
                             <i class="fa-solid fa-sign-out-alt"></i> Logout
                         </a>
-                    </li>
+                    </li>                    
 
                 </ul>
             </div>
         </div>
     </nav>
     
-    <!-- Main Content -->
+    <!-- Main Alert -->
     <div class="container mt-4">
+        <div id="mainAlert" class="mt-5 alert alert-success alert-dismissible fade show d-none" role="alert">
+            <span id="alertMessage"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mt-4" id="welcomeSection">
+       
         <div class="text-center mt-5">
             <h1 class="display-4"><i class="fa-solid fa-address-book"></i> Welcome to Contacts App</h1>
             <p class="lead">Easily store, manage, and organize your contacts securely.</p>
         </div>
 
-        <div id="mainAlert" class="mt-5 alert alert-success alert-dismissible fade show d-none" role="alert">
-            <span id="alertMessage"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="row mt-5 justify-content-center">
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch mb-4">
+                <div class="card shadow-lg p-4 text-center border-0 h-100 w-100">
+                    <i class="fa-solid fa-user-plus fa-3x text-primary"></i>
+                    <h4 class="mt-3">Easy Contact Management</h4>
+                    <p>Quickly add, update, and delete your contacts with a user-friendly interface.</p>
+                </div>
+            </div>
+        
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch mb-4">
+                <div class="card shadow-lg p-4 text-center border-0 h-100 w-100">
+                    <i class="fa-solid fa-cloud fa-3x text-success"></i>
+                    <h4 class="mt-3">Access Anywhere</h4>
+                    <p>Your contacts are stored securely in the cloud and accessible from any device.</p>
+                </div>
+            </div>
+        
+            <div class="col-12 col-md-6 col-lg-4 d-flex align-items-stretch mb-4">
+                <div class="card shadow-lg p-4 text-center border-0 h-100 w-100">
+                    <i class="fa-solid fa-lock fa-3x text-danger"></i>
+                    <h4 class="mt-3">Secure & Private</h4>
+                    <p>Your data is encrypted and only accessible by you.</p>
+                </div>
+            </div>
         </div>
 
+    </div>
+
+
+
+    
+    <div class="container mt-4">
         <div class="mt-5" id="contactsSection" style="display: none;">
             <button class="btn btn-primary mb-3" id="addContact">Add Contact</button>
             <table class="table table-bordered">
@@ -118,6 +154,26 @@
           </div>
         </div>
       </div>
+    </div>
+
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to logout?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" id="confirmLogout">Logout</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 
 

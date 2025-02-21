@@ -56,7 +56,7 @@
         isUserLoggedIn().then((loggedIn) => {
             if(loggedIn){
                 // User is logged in
-                $('#loginNav, #registerNav').addClass('d-none');
+                 $('#loginNav, #registerNav, #welcomeSection').addClass('d-none');
                 $('#logoutNav').removeClass('d-none');
 
                 loadContacts();
@@ -128,7 +128,7 @@
                         .addClass('alert-success')
                         .find('#alertMessage').text('Login successful!');
 
-                        $('#loginNav, #registerNav').addClass('d-none');
+                         $('#loginNav, #registerNav, #welcomeSection').addClass('d-none');
                         $('#logoutNav').removeClass('d-none');
 
                         loadContacts(); // Load contacts dynamically after login
@@ -143,6 +143,25 @@
         });
  
 
+ 
+        // CONFIRM LOGOUT
+        $('#confirmLogout').click(function(){
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            
+            $('#logoutModal').modal('hide');
+            
+            $('#loginNav, #registerNav, #welcomeSection').removeClass('d-none');
+            $('#logoutNav').addClass('d-none');
+            $('#contactsSection').hide();
+    
+            $('#mainAlert')
+                .removeClass('d-none alert-danger')
+                .addClass('alert-success')
+                .find('#alertMessage').text('Logged out successfully.');
+        });
+
+        
         //SAVE CONTACT
         $('#saveContact').click(function(e){
             e.preventDefault();
