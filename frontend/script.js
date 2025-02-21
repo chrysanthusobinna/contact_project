@@ -48,6 +48,21 @@
             });
         }
 
+
+    //LOAD USER DETAILS
+    function loadUserDetails(){
+        $.ajax({
+            url: API_BASE_URL + '/user-details/',
+            method: 'GET',
+            headers: {'Authorization': 'Bearer ' + localStorage.getItem('access')},
+            success: function(user){
+                $('#welcomeUser').text(`Welcome, ${user.username}!`);
+            },
+            error: function(){
+                $('#welcomeUser').text('');
+            }
+        });
+    }
         
     // Document ready 
     $(function (){
@@ -56,9 +71,10 @@
         isUserLoggedIn().then((loggedIn) => {
             if(loggedIn){
                 // User is logged in
-                 $('#loginNav, #registerNav, #welcomeSection').addClass('d-none');
+                 $('#loginNav, #registerNav, #GuestSection').addClass('d-none');
                 $('#logoutNav').removeClass('d-none');
 
+                loadUserDetails();
                 loadContacts();
             } else {
                 // User is not logged in
@@ -128,10 +144,11 @@
                         .addClass('alert-success')
                         .find('#alertMessage').text('Login successful!');
 
-                         $('#loginNav, #registerNav, #welcomeSection').addClass('d-none');
+                         $('#loginNav, #registerNav, #GuestSection').addClass('d-none');
                         $('#logoutNav').removeClass('d-none');
 
-                        loadContacts(); // Load contacts dynamically after login
+                        loadUserDetails();
+                        loadContacts();  
                 },
                 error: function(xhr){
                     let errorMessage = 'Login failed! Incorrect username or password.';
@@ -151,7 +168,7 @@
             
             $('#logoutModal').modal('hide');
             
-            $('#loginNav, #registerNav, #welcomeSection').removeClass('d-none');
+            $('#loginNav, #registerNav, #GuestSection').removeClass('d-none');
             $('#logoutNav').addClass('d-none');
             $('#contactsSection').hide();
     

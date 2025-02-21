@@ -8,14 +8,6 @@ from .models import Contact
 from .serializers import ContactSerializer, RegisterSerializer, UserSerializer
 
 
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from .models import Contact
-from .serializers import ContactSerializer
-
-
 # User Registration
 @api_view(['POST'])
 def register(request):
@@ -58,7 +50,7 @@ def create_contact(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Get a Single Contact
+# Get Single Contact
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_contact(request, pk):
@@ -69,7 +61,7 @@ def get_contact(request, pk):
     except Contact.DoesNotExist:
         return Response({"error": "Contact not found"}, status=status.HTTP_404_NOT_FOUND)
 
-# Edit (Update) a Contact
+# Update Contact
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def edit_contact(request, pk):
@@ -84,7 +76,7 @@ def edit_contact(request, pk):
         return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# Delete a Contact
+# Delete Contact
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_contact(request, pk):
@@ -94,3 +86,14 @@ def delete_contact(request, pk):
         return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
     except Contact.DoesNotExist:
         return Response({"error": "Contact not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# get authenticated user details
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_details(request):
+    user = request.user
+    return Response({
+        'username': user.username,
+        'email': user.email,
+    })
