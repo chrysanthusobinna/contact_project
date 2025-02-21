@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from django.contrib.auth.models import User
 from .models import Contact
 from .serializers import ContactSerializer, RegisterSerializer, UserSerializer
@@ -21,14 +22,17 @@ def register(request):
 # User Logout
 @api_view(['POST'])
 def logout(request):
+    refresh_token = request.data.get("refresh")
+    if not refresh_token:
+        return Response({"error": "Refresh token is required."}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
-        refresh_token = request.data["refresh"]
         token = RefreshToken(refresh_token)
         token.blacklist()
         return Response({"message": "You have been logged out successfully!"}, status=status.HTTP_205_RESET_CONTENT)
-    except Exception as e:
+    except (TokenError, InvalidToken):
         return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-
+        
 
 # Show All Contacts
 @api_view(['GET'])

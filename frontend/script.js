@@ -1,4 +1,26 @@
 
+ 
+        // HANDLE CONNECTION API ERRORS
+        function handleApiError(xhr){
+            $('.modal.show').modal('hide');
+
+            let errorMessage;
+
+            if(xhr.status === 0){
+                errorMessage = 'Connection failed. Please check your internet or API connection.';
+            } else if(xhr.responseJSON && xhr.responseJSON.detail) {
+                errorMessage = xhr.responseJSON.detail;
+            } else {
+                errorMessage = 'An unexpected error occurred. Please try again later.';
+            }
+
+            $('#mainAlert')
+                .removeClass('d-none alert-success alert-info')
+                .addClass('alert-danger')
+                .find('#alertMessage').text(errorMessage);
+        }
+
+ 
         // FUNCTION LOAD CONTACTS
         function loadContacts(){
             $.ajax({
@@ -21,9 +43,12 @@
                         `);
                     });
                     $('#contactsSection').show();
+                },
+                error: function(){
+                    $('#welcomeUser').text('');
                 }
             });
-        }     
+        }
 
         //CHECK IF USER IS LOGGED IN
         function isUserLoggedIn(){
@@ -64,7 +89,9 @@
         });
     }
         
-    // Document ready 
+
+
+    // DOCUMENT READY 
     $(function (){
         
         // IF USER IS LOGGED IN
@@ -84,7 +111,7 @@
             }
         });
 
-
+        
         // USER REGISTER
         $('#registerBtn').click(function(e){
             e.preventDefault();
@@ -100,29 +127,31 @@
                 success: function(response){
                     $('#registerModal').modal('hide');
                     $('#mainAlert')
-                    .removeClass('d-none alert-danger')
-                    .addClass('alert-success')
-                    .find('#alertMessage').text('Registration successful! Please login.');
+                        .removeClass('d-none alert-danger')
+                        .addClass('alert-success')
+                        .find('#alertMessage').text('Registration successful! Please login.');
                 },
                 error: function(xhr){
-                    let errors = xhr.responseJSON;
-                    let errorMessage = '<ul>';
-                    for (let key in errors){
-                        errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                    if(xhr.status === 400){
+                        let errors = xhr.responseJSON;
+                        let errorMessage = '<ul>';
+                        for (let key in errors){
+                            errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                        }
+                        errorMessage += '</ul>';
+                        
+                        $('#registerErrorAlert')
+                            .removeClass('d-none')   
+                            .html(errorMessage);
+                    } else {
+                        handleApiError(xhr); 
                     }
-                    errorMessage += '</ul>';
-                    
-                    $('#registerErrorAlert')
-                        .removeClass('d-none')   
-                        .html(errorMessage);      
                 }
-                
-                
             });
         });
 
  
-        //USER LOGIN
+        // USER LOGIN
         $('#loginBtn').click(function(e){
             e.preventDefault();
             $.ajax({
@@ -144,21 +173,25 @@
                         .addClass('alert-success')
                         .find('#alertMessage').text('Login successful!');
 
-                         $('#loginNav, #registerNav, #GuestSection').addClass('d-none');
-                        $('#logoutNav').removeClass('d-none');
+                    $('#loginNav, #registerNav, #GuestSection').addClass('d-none');
+                    $('#logoutNav').removeClass('d-none');
 
-                        loadUserDetails();
-                        loadContacts();  
+                    loadUserDetails();
+                    loadContacts();  
                 },
                 error: function(xhr){
-                    let errorMessage = 'Login failed! Incorrect username or password.';
-                    $('#loginErrorAlert')
-                        .removeClass('d-none')
-                        .text(errorMessage);
+                    if(xhr.status === 401){
+                        let errorMessage = 'Login failed! Incorrect username or password.';
+                        $('#loginErrorAlert')
+                            .removeClass('d-none')
+                            .text(errorMessage);
+                    } else {
+                        handleApiError(xhr); 
+                    }
                 }
             });
         });
- 
+
 
  
         // CONFIRM LOGOUT
@@ -208,16 +241,20 @@
                     loadContacts();  
                 },
                 error: function(xhr){
-                    let errors = xhr.responseJSON;
-                    let errorMessage = '<ul>';
-                    for (let key in errors){
-                        errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                    if(xhr.status === 400){
+                        let errors = xhr.responseJSON;
+                        let errorMessage = '<ul>';
+                        for (let key in errors){
+                            errorMessage += `<li><strong>${key}:</strong> ${errors[key]}</li>`;
+                        }
+                        errorMessage += '</ul>';
+        
+                        $('#contactErrorAlert')
+                            .removeClass('d-none')
+                            .html(errorMessage);
+                    } else {
+                        handleApiError(xhr);  
                     }
-                    errorMessage += '</ul>';
-    
-                    $('#contactErrorAlert')
-                        .removeClass('d-none')
-                        .html(errorMessage);
                 }
             });
         });
@@ -251,11 +288,7 @@
                 $('#contactModal').modal('show');
             },
             error: function(xhr){
-                let errorMessage = xhr.responseJSON.detail || 'Failed to load contact details.';
-                $('#mainAlert')
-                    .removeClass('d-none alert-success')
-                    .addClass('alert-danger')
-                    .find('#alertMessage').text(errorMessage);
+                handleApiError(xhr);  
             }
         });
     });
@@ -289,10 +322,7 @@
                 loadContacts();
             },
             error: function(xhr){
-                let errorMessage = xhr.responseJSON.detail || 'Failed to delete contact.';
-                $('#deleteErrorAlert')
-                    .removeClass('d-none')
-                    .text(errorMessage);
+                handleApiError(xhr); 
             }
         });
     });
