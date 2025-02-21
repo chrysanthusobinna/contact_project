@@ -27,7 +27,7 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = ['id', 'user', 'name', 'address', 'phone_number']
-        read_only_fields = ['user', 'id']  # User set automatically
+        read_only_fields = ['user', 'id'] 
 
     # Validate name
     def validate_name(self, value):
