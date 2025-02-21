@@ -89,7 +89,10 @@
                         success: function(){
                             resolve(true);  
                         },
-                        error: function(){
+                        error: function(xhr){
+                            if(xhr.status === 0){
+                                handleApiError(xhr);    
+                            }
                             resolve(false);  
                         }
                     });
@@ -152,13 +155,12 @@
                 contentType: 'application/json',
                 success: function(response){
                     $('#registerModal').modal('hide');
-                    $('#mainAlert')
-                        .removeClass('d-none alert-danger')
-                        .addClass('alert-success')
-                        .find('#alertMessage').text('Registration successful! Please login.');
+                    $('#mainAlert').removeClass('d-none alert-danger').addClass('alert-success').find('#alertMessage').text('Registration successful! Please login.');
                 },
                 error: function(xhr){
-                    if(xhr.status === 400){
+                    if(xhr.status === 0) {
+                        handleApiError(xhr);
+                    } else {
                         let errors = xhr.responseJSON;
                         let errorMessage = '<ul>';
                         for (let key in errors){
@@ -167,11 +169,7 @@
                         }
                         errorMessage += '</ul>';                        
                         
-                        $('#registerErrorAlert')
-                            .removeClass('d-none')   
-                            .html(errorMessage);
-                    } else {
-                        handleApiError(xhr); 
+                        $('#registerErrorAlert').removeClass('d-none').html(errorMessage);
                     }
                 }
             });
@@ -207,11 +205,16 @@
                     loadContacts();  
                 },
                 error: function(xhr){
-                    let errorMessage = 'Login failed! Incorrect username or password.';
-                    $('#loginErrorAlert').removeClass('d-none') .text(errorMessage);
+                    if(xhr.status === 0) {
+                        handleApiError(xhr); 
+                    } else {
+                        let errorMessage = 'Login failed! Incorrect username or password.';
+                        $('#loginErrorAlert').removeClass('d-none').text(errorMessage);
+                    }
                 }
             });
         });
+
 
 
  
@@ -262,7 +265,9 @@
                     loadContacts();  
                 },
                 error: function(xhr){
-                    if(xhr.status === 400){
+                    if(xhr.status === 0) {
+                        handleApiError(xhr); 
+                    } else {
                         let errors = xhr.responseJSON;
                         let errorMessage = '<ul>';
                         for (let key in errors){
@@ -274,8 +279,6 @@
                         $('#contactErrorAlert')
                             .removeClass('d-none')
                             .html(errorMessage);
-                    } else {
-                        handleApiError(xhr);  
                     }
                 }
             });
@@ -312,7 +315,9 @@
                 $('#contactModal').modal('show');
             },
             error: function(xhr){
-                handleApiError(xhr);  
+                if(xhr.status === 0) {
+                    handleApiError(xhr); 
+                }
             }
         });
     });
@@ -346,7 +351,9 @@
                 loadContacts();
             },
             error: function(xhr){
-                handleApiError(xhr); 
+                if(xhr.status === 0) {
+                    handleApiError(xhr); 
+                }
             }
         });
     });
