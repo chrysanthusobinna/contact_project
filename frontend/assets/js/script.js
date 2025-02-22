@@ -140,7 +140,16 @@
             }
         });
 
-        
+
+        // ON CLICK REGISTER NAV BUTTON
+        $('#registerNav').on('click', function() {
+            $('#registerErrorAlert').addClass('d-none').text('');
+            $('#registerUsername').val('');
+            $('#registerEmail').val('');
+            $('#registerPassword').val('');
+          });
+
+
         // USER REGISTER
         $('#registerBtn').click(function(e){
             e.preventDefault();
@@ -176,6 +185,14 @@
         });
 
  
+        // ON CLICK LOGIN NAV BUTTON
+        $('#loginNav').on('click', function() {
+            $('#loginErrorAlert').addClass('d-none').text('');
+            $('#loginUsername').val('');
+            $('#loginPassword').val('');
+        });
+
+
         // USER LOGIN
         $('#loginBtn').click(function(e){
             e.preventDefault();
