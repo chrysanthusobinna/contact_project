@@ -16,7 +16,6 @@ jmespath==1.0.1
 packaging==24.2
 pathspec==0.10.1
 PyJWT==2.10.1
-pypiwin32==223
 python-dateutil==2.9.0.post0
 PyYAML==6.0.2
 requests==2.32.3
