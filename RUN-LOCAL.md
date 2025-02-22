@@ -1,3 +1,6 @@
+> [!NOTE]  
+> Return back to the [README.md](README.md) file.
+
 # Running the Contact Project Locally
 
 This guide explains how to clone and run both the **backend (Django API)** and **frontend (HTML & jQuery)** locally on your computer.

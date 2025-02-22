@@ -1,2 +1,3 @@
 contacts_api/db.sqlite3
+contacts_api/env.py
 contacts_api/contacts/__pycache__/
